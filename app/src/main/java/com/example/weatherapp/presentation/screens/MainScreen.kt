@@ -2,10 +2,11 @@ package com.example.weatherapp.presentation.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -28,15 +29,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCompositionContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -46,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import com.example.weatherapp.R
 import com.example.weatherapp.data.model.WeatherModel
 import com.example.weatherapp.presentation.models.BriefWeather
+import com.example.weatherapp.presentation.models.CardTypes
 import com.example.weatherapp.presentation.models.DayWiseBriefWeather
 import com.example.weatherapp.presentation.viewmodel.MainScreenVM
 import com.example.weatherapp.utils.getBriefWeatherInfo
@@ -84,7 +83,14 @@ fun MainScreenCombinedView(mainScreenVM: MainScreenVM) {
         }
     }
     when (state.value) {
-        is MainScreenState.Loading -> CircularProgressIndicator()
+        is MainScreenState.Loading -> Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier.fillMaxSize(0.2f)
+            )
+        }
 
         is MainScreenState.Success -> {
             MainScreenView((state.value as MainScreenState.Success).data)
@@ -124,6 +130,27 @@ fun MainScreenView(data: WeatherModel) {
             )
         }
         Spacer(modifier = Modifier.height(20.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 10.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            GenericWeatherInfoCard(CardTypes.HUMIDITY, data)
+            GenericWeatherInfoCard(CardTypes.WINDSPEED, data)
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 10.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            GenericWeatherInfoCard(CardTypes.SUNRISE, data)
+            GenericWeatherInfoCard(CardTypes.UV_INDEX, data)
+        }
+        Spacer(modifier = Modifier.height(10.dp))
         DailyWeatherCardsHorizontalView(data.getListOfWeekForecast())
     }
 }
@@ -132,7 +159,7 @@ fun MainScreenView(data: WeatherModel) {
 fun CityWeatherBigCard(briefWeather: BriefWeather) {
     Card(
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         modifier = Modifier
             .wrapContentWidth()
@@ -148,7 +175,6 @@ fun CityWeatherBigCard(briefWeather: BriefWeather) {
                 contentDescription = null,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .padding(20.dp)
             )
             Row(
                 modifier = Modifier
@@ -157,7 +183,7 @@ fun CityWeatherBigCard(briefWeather: BriefWeather) {
             ) {
                 Text(
                     text = briefWeather.cityName,
-                    style = MaterialTheme.typography.headlineMedium.copy(fontFamily = FontFamily.Serif),
+                    style = MaterialTheme.typography.titleLarge.copy(fontFamily = FontFamily.Serif),
                     modifier = Modifier.padding(horizontal = 7.dp)
                 )
                 Icon(
@@ -166,7 +192,7 @@ fun CityWeatherBigCard(briefWeather: BriefWeather) {
                     modifier = Modifier
                         .size(20.dp)
                         .align(Alignment.CenterVertically)
-                        .offset(y = (-3).dp)
+                        .offset(y = (-2).dp)
                         .rotate(45f)
                 )
             }
@@ -175,14 +201,14 @@ fun CityWeatherBigCard(briefWeather: BriefWeather) {
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(2.dp),
-                style = MaterialTheme.typography.displayMedium.copy(fontFamily = FontFamily.Serif)
+                style = MaterialTheme.typography.titleLarge.copy(fontFamily = FontFamily.Serif)
             )
             Text(
                 text = briefWeather.briefWeatherDesc,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(2.dp),
-                style = MaterialTheme.typography.titleLarge.copy(
+                style = MaterialTheme.typography.titleMedium.copy(
                     fontFamily = FontFamily.Serif, fontStyle = FontStyle.Italic
                 )
             )
@@ -192,7 +218,11 @@ fun CityWeatherBigCard(briefWeather: BriefWeather) {
 
 @Composable
 fun DailyWeatherCardsHorizontalView(data: List<DayWiseBriefWeather>) {
-    LazyRow(modifier = Modifier.fillMaxWidth()) {
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp)
+    ) {
         items(items = data) {
             DailyWeatherCard(it)
         }
@@ -203,7 +233,7 @@ fun DailyWeatherCardsHorizontalView(data: List<DayWiseBriefWeather>) {
 fun DailyWeatherCard(dayWiseBriefWeather: DayWiseBriefWeather) {
     Card(
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         modifier = Modifier
             .wrapContentWidth()

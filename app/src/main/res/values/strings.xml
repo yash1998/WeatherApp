@@ -3,4 +3,8 @@
 
     <string name="temp_in_celsius">%1$s° C</string>
     <string name="temp_in_fahrenheit">%1$s° F</string>
+
+    <string name="windspeed_in_kmph">%1$s kmph</string>
+    <string name="windspeed_in_miles">%1$s miles</string>
+
 </resources>
