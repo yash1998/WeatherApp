@@ -1,6 +1,6 @@
 
 ## Developed using Clean + MVI architecture structure
-
+```
 com.example.weatherapp
 ├── presentation
 │   ├── models
@@ -15,5 +15,6 @@ com.example.weatherapp
 │   └── repository
 │── di
 └── utils
+```
 
-![mainscreen_ss.png](MainScreen Screenshot)
+![mainscreen_ss.png](mainscreen_ss.png)
