@@ -16,5 +16,4 @@ com.example.weatherapp
 │── di
 └── utils
 ```
-
-![mainscreen_ss.png](mainscreen_ss.png)
+<img src="mainscreen_ss.png" alt="mainscreen_ss.png" width="200"/>
